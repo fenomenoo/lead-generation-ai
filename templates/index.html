@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — LeadGen AI{% endblock %}
+{% block content %}
+<h2 class="mb-4">Campaign Overview</h2>
+
+<div class="row g-4 mb-5">
+  <div class="col-md-3">
+    <div class="card stat-card shadow-sm">
+      <div class="card-body">
+        <h6 class="text-muted">Total Leads</h6>
+        <h2 class="fw-bold">{{ stats.total }}</h2>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stat-card shadow-sm" style="border-color:#198754">
+      <div class="card-body">
+        <h6 class="text-muted">Replies</h6>
+        <h2 class="fw-bold text-success">{{ stats.by_status.get('replied', 0) }}</h2>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stat-card shadow-sm" style="border-color:#fd7e14">
+      <div class="card-body">
+        <h6 class="text-muted">Emails Sent</h6>
+        <h2 class="fw-bold text-warning">{{ stats.emails_sent }}</h2>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card stat-card shadow-sm" style="border-color:#6610f2">
+      <div class="card-body">
+        <h6 class="text-muted">Reply Rate</h6>
+        {% set rate = ((stats.by_status.get('replied', 0) / stats.total * 100) if stats.total > 0 else 0) %}
+        <h2 class="fw-bold text-primary">{{ "%.1f"|format(rate) }}%</h2>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h5 class="mb-3">Lead Status Breakdown</h5>
+<div class="row g-3">
+  {% for status, count in stats.by_status.items() %}
+  <div class="col-auto">
+    <a href="/leads?status={{ status }}" class="text-decoration-none">
+      <span class="badge badge-{{ status }} rounded-pill fs-6 px-3 py-2">
+        {{ status.replace('_', ' ').title() }}: {{ count }}
+      </span>
+    </a>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="mt-5">
+  <a href="/run" class="btn btn-primary btn-lg me-2">Run Campaign</a>
+  <a href="/leads" class="btn btn-outline-secondary btn-lg">View All Leads</a>
+</div>
+{% endblock %}

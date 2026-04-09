@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}{{ lead.name }} — LeadGen AI{% endblock %}
+{% block content %}
+<a href="/leads" class="text-muted small">&larr; Back to Leads</a>
+<h2 class="mt-2 mb-1">{{ lead.name }}</h2>
+<span class="badge badge-{{ lead.status }} mb-4">{{ lead.status.replace('_',' ').title() }}</span>
+
+<div class="row g-4">
+  <!-- Lead Info -->
+  <div class="col-md-4">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h6 class="card-title text-muted text-uppercase small">Contact Info</h6>
+        <p class="mb-1"><strong>Niche:</strong> {{ lead.niche or '—' }}</p>
+        <p class="mb-1"><strong>City:</strong> {{ lead.city or '—' }}</p>
+        <p class="mb-1"><strong>Owner:</strong> {{ lead.owner_name or '—' }}</p>
+        <p class="mb-1"><strong>Email:</strong> {{ lead.email or '—' }}</p>
+        <p class="mb-1"><strong>Phone:</strong> {{ lead.phone or '—' }}</p>
+        <p class="mb-1"><strong>Rating:</strong> {{ lead.rating or '—' }} ({{ lead.review_count or 0 }} reviews)</p>
+        {% if lead.website %}
+        <p class="mb-1"><strong>Website:</strong> <a href="{{ lead.website }}" target="_blank">{{ lead.website }}</a></p>
+        {% endif %}
+        {% if lead.description %}
+        <p class="mt-2 text-muted small">{{ lead.description }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Update Status -->
+    <div class="card shadow-sm mt-3">
+      <div class="card-body">
+        <h6 class="card-title text-muted text-uppercase small">Update Status</h6>
+        <form method="POST" action="/leads/{{ lead.id }}/status">
+          <select name="status" class="form-select mb-2">
+            <option value="replied">Replied</option>
+            <option value="not_interested">Not Interested</option>
+            <option value="unsubscribed">Unsubscribed</option>
+            <option value="bounced">Bounced</option>
+          </select>
+          <button class="btn btn-sm btn-outline-primary w-100">Update</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Email Sequences -->
+  <div class="col-md-8">
+    <h5>Email Sequence</h5>
+    {% if emails %}
+      {% for email in emails %}
+      <div class="card shadow-sm mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <strong>{{ email.email_type.replace('_',' ').title() }}</strong>
+          <span>
+            {% if email.sent_at %}
+              <span class="badge bg-success">Sent {{ email.sent_at[:10] }}</span>
+            {% else %}
+              <span class="badge bg-secondary">Scheduled {{ (email.scheduled_for or '')[:10] }}</span>
+            {% endif %}
+          </span>
+        </div>
+        <div class="card-body">
+          <p class="mb-1"><strong>Subject:</strong> {{ email.subject }}</p>
+          <hr />
+          <pre class="mb-0" style="white-space:pre-wrap;font-family:inherit;font-size:.9rem">{{ email.body }}</pre>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="alert alert-secondary">No emails generated yet. Run <strong>Write Emails</strong> from the campaign page.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

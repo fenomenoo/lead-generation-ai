@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Run Campaign — LeadGen AI{% endblock %}
+{% block content %}
+<h2 class="mb-4">Run Campaign</h2>
+
+<div class="row g-4">
+  <!-- Scrape -->
+  <div class="col-md-6">
+    <div class="card shadow-sm border-primary">
+      <div class="card-header bg-primary text-white"><strong>Step 1 — Scrape Leads</strong></div>
+      <div class="card-body">
+        <p class="text-muted small">Pull businesses from Google Maps by niche and city.</p>
+        <form method="POST">
+          <input type="hidden" name="action" value="scrape" />
+          <div class="mb-2">
+            <label class="form-label">Niche</label>
+            <input type="text" name="niche" class="form-control" placeholder="e.g. roofers, HVAC, dentists" required />
+          </div>
+          <div class="mb-2">
+            <label class="form-label">City</label>
+            <input type="text" name="city" class="form-control" placeholder="e.g. Dallas TX" required />
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Limit</label>
+            <input type="number" name="limit" class="form-control" value="20" min="1" max="200" />
+          </div>
+          <button class="btn btn-primary w-100">Scrape Now</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enrich -->
+  <div class="col-md-6">
+    <div class="card shadow-sm border-info">
+      <div class="card-header bg-info text-white"><strong>Step 2 — Enrich Leads</strong></div>
+      <div class="card-body">
+        <p class="text-muted small">Visit each website and extract email, owner name, and description.</p>
+        <form method="POST">
+          <input type="hidden" name="action" value="enrich" />
+          <div class="mb-3">
+            <label class="form-label">Limit (0 = all)</label>
+            <input type="number" name="limit" class="form-control" value="50" min="1" />
+          </div>
+          <button class="btn btn-info w-100 text-white">Enrich Leads</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Write Emails -->
+  <div class="col-md-6">
+    <div class="card shadow-sm border-purple" style="border-color:#6610f2!important">
+      <div class="card-header text-white" style="background:#6610f2"><strong>Step 3 — Write Emails (AI)</strong></div>
+      <div class="card-body">
+        <p class="text-muted small">Claude AI writes personalized 3-touch email sequences for each lead with an email address.</p>
+        <form method="POST">
+          <input type="hidden" name="action" value="write" />
+          <div class="mb-3">
+            <label class="form-label">Limit (0 = all)</label>
+            <input type="number" name="limit" class="form-control" value="50" min="1" />
+          </div>
+          <button class="btn w-100 text-white" style="background:#6610f2">Generate Emails</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Send Emails -->
+  <div class="col-md-6">
+    <div class="card shadow-sm border-success">
+      <div class="card-header bg-success text-white"><strong>Step 4 — Send Emails</strong></div>
+      <div class="card-body">
+        <p class="text-muted small">Send all emails due today (initial + follow-ups). Capped at 50/day by default.</p>
+        <form method="POST" class="mb-2">
+          <input type="hidden" name="action" value="send" />
+          <div class="mb-3">
+            <label class="form-label">Max to send</label>
+            <input type="number" name="limit" class="form-control" value="30" min="1" max="50" />
+          </div>
+          <button class="btn btn-success w-100">Send Now</button>
+        </form>
+        <form method="POST">
+          <input type="hidden" name="action" value="dry_run" />
+          <input type="hidden" name="limit" value="10" />
+          <button class="btn btn-outline-secondary w-100">Dry Run (Preview Only)</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
