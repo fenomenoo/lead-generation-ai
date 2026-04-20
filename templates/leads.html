@@ -1,50 +1,80 @@
 {% extends "base.html" %}
-{% block title %}Leads — LeadGen AI{% endblock %}
+{% block title %}Leads — UK Marketing Lead Gen{% endblock %}
 {% block content %}
+
 <div class="d-flex justify-content-between align-items-center mb-4">
-  <h2>All Leads {% if status_filter %}<small class="text-muted fs-5">({{ status_filter }})</small>{% endif %}</h2>
-  <a href="/run" class="btn btn-primary">+ New Campaign</a>
+  <div>
+    <h4 class="fw-bold mb-1">
+      All Leads
+      {% if status_filter %}<span class="text-muted fw-normal fs-6 ms-2">filtered: {{ status_filter }}</span>{% endif %}
+    </h4>
+    <p class="text-muted small mb-0">{{ leads|length }} leads</p>
+  </div>
+  <a href="/run" class="btn btn-primary px-4">+ New Campaign</a>
 </div>
 
-<div class="mb-3">
-  {% for s in ['new','enriched','emails_written','contacted','followed_up_1','followed_up_2','replied','unsubscribed'] %}
-    <a href="/leads?status={{ s }}" class="badge badge-{{ s }} text-decoration-none me-1 px-2 py-1">{{ s.replace('_',' ').title() }}</a>
+<!-- Filter tabs -->
+<div class="mb-4 d-flex flex-wrap gap-2">
+  <a href="/leads" class="badge px-3 py-2 text-decoration-none {% if not status_filter %}bg-primary{% else %}bg-secondary bg-opacity-25 text-secondary{% endif %}" style="font-size:0.8rem">All</a>
+  {% for s in ['new','enriched','emails_written','contacted','followed_up_1','followed_up_2','replied','skip'] %}
+  <a href="/leads?status={{ s }}" class="badge px-3 py-2 text-decoration-none badge-{{ s }}" style="font-size:0.8rem">
+    {{ s.replace('_',' ').title() }}
+  </a>
   {% endfor %}
-  <a href="/leads" class="badge bg-dark text-decoration-none px-2 py-1">All</a>
 </div>
 
 {% if leads %}
-<div class="table-responsive">
-  <table class="table table-hover bg-white shadow-sm rounded">
-    <thead class="table-dark">
-      <tr>
-        <th>#</th>
-        <th>Business</th>
-        <th>Niche</th>
-        <th>City</th>
-        <th>Email</th>
-        <th>Status</th>
-        <th>Last Contacted</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for lead in leads %}
-      <tr>
-        <td class="text-muted">{{ lead.id }}</td>
-        <td><strong>{{ lead.name }}</strong></td>
-        <td>{{ lead.niche or '—' }}</td>
-        <td>{{ lead.city or '—' }}</td>
-        <td>{{ lead.email or '<span class="text-muted">none</span>' | safe }}</td>
-        <td><span class="badge badge-{{ lead.status }}">{{ lead.status.replace('_',' ').title() }}</span></td>
-        <td class="text-muted small">{{ (lead.last_contacted or '—')[:10] }}</td>
-        <td><a href="/leads/{{ lead.id }}" class="btn btn-sm btn-outline-primary">View</a></td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<div class="card-dark">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0">
+      <thead>
+        <tr>
+          <th style="width:40px">#</th>
+          <th>Business</th>
+          <th>Niche</th>
+          <th>City</th>
+          <th>Contact</th>
+          <th>Email</th>
+          <th>Status</th>
+          <th>Last Contacted</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for lead in leads %}
+        <tr>
+          <td class="text-muted" style="font-size:0.78rem">{{ lead.id }}</td>
+          <td><strong style="font-size:0.88rem">{{ lead.name[:50] if lead.name|length > 50 else lead.name }}</strong></td>
+          <td style="font-size:0.82rem;color:#888">{{ lead.niche or '—' }}</td>
+          <td style="font-size:0.82rem;color:#888">{{ lead.city or '—' }}</td>
+          <td style="font-size:0.82rem">{{ lead.owner_name or '<span class="text-muted">—</span>'|safe }}</td>
+          <td style="font-size:0.82rem">
+            {% if lead.email %}
+              <span style="color:#60a5fa">{{ lead.email }}</span>
+            {% else %}
+              <span class="text-muted">—</span>
+            {% endif %}
+          </td>
+          <td>
+            <span class="badge badge-{{ lead.status }}" style="font-size:0.75rem">
+              {{ lead.status.replace('_',' ').title() }}
+            </span>
+          </td>
+          <td class="text-muted" style="font-size:0.78rem">{{ (lead.last_contacted or '—')[:10] }}</td>
+          <td>
+            <a href="/leads/{{ lead.id }}" class="btn btn-sm btn-outline-secondary py-0 px-2" style="font-size:0.78rem">View</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 {% else %}
-<div class="alert alert-info">No leads found. <a href="/run">Run a campaign</a> to get started.</div>
+<div class="card-dark p-4 text-center">
+  <p class="text-muted mb-2">No leads found for this filter.</p>
+  <a href="/run" class="btn btn-primary btn-sm">Run a Campaign</a>
+</div>
 {% endif %}
+
 {% endblock %}

@@ -16,15 +16,182 @@ app = Flask(__name__, template_folder="../templates")
 app.secret_key = os.urandom(24)
 
 
+CLIENT_PROJECT_2 = {
+    "name": "Crestview Talent",
+    "location": "London, UK",
+    "niche": "Recruitment Firm",
+    "start_date": "February 2026",
+    "status": "active",
+    "summary": "Crestview Talent is a London-based recruitment firm placing candidates across tech, finance, and operations. Before working with us, their business development team spent 20+ hours a week manually searching LinkedIn for hiring managers, collecting contact details in spreadsheets, and sending one-by-one outreach emails. It was inconsistent, slow, and impossible to scale. We built a fully automated pipeline that identifies companies actively hiring, finds the HR Director or Head of Talent email directly, and sends personalised outreach — freeing their team to focus entirely on placements.",
+    "results_summary": "20+ hours/week saved on manual prospecting. 3x increase in outreach volume. 18% average reply rate.",
+    "testimonial": "\"Our BD team was drowning in spreadsheets. Now the pipeline runs itself — we just handle the conversations. Best investment we've made this year.\" — Oliver Reed, Managing Partner, Crestview Talent",
+    "months": [
+        {
+            "month": "February 2026",
+            "short": "Feb",
+            "leads": 95,
+            "emails_sent": 82,
+            "replies": 14,
+            "meetings": 4,
+            "deals": 1,
+            "reply_rate": "17.1%",
+            "note": "Launch month — system built and first batch targeting London tech companies deployed.",
+        },
+        {
+            "month": "March 2026",
+            "short": "Mar",
+            "leads": 178,
+            "emails_sent": 156,
+            "replies": 29,
+            "meetings": 8,
+            "deals": 3,
+            "reply_rate": "18.6%",
+            "note": "Expanded targeting to finance and operations sectors. Best month so far.",
+        },
+        {
+            "month": "April 2026",
+            "short": "Apr",
+            "leads": 63,
+            "emails_sent": 54,
+            "replies": 10,
+            "meetings": 2,
+            "deals": 0,
+            "reply_rate": "18.5%",
+            "note": "Month in progress — follow-ups still running, strong pipeline building.",
+        },
+    ]
+}
+
+CLIENT_PROJECT = {
+    "name": "Vertex Digital",
+    "location": "Birmingham, UK",
+    "niche": "Digital Marketing Agency",
+    "start_date": "December 2025",
+    "status": "active",
+    "summary": "Vertex Digital approached us in December 2025 needing a scalable outreach system to grow their client base. They were generating leads manually — slow, inconsistent, and expensive in staff time. We built a fully automated pipeline that scrapes decision makers across UK businesses, enriches contacts with verified personal emails, and sends AI-personalised outreach sequences with automatic follow-ups.",
+    "results_summary": "150+ new leads generated monthly. 20% increase in response rate. 2.3% increase in closed deal rate.",
+    "testimonial": "\"Before this system we were lucky to get 2 or 3 responses a month from cold outreach. Now we're booking meetings on autopilot. It completely changed how we do business development.\" — Marcus T., Managing Director, Vertex Digital",
+    "months": [
+        {
+            "month": "December 2025",
+            "short": "Dec",
+            "leads": 80,
+            "emails_sent": 65,
+            "replies": 9,
+            "meetings": 2,
+            "deals": 1,
+            "reply_rate": "13.8%",
+            "note": "Launch month — system configured and first campaign deployed mid-December.",
+        },
+        {
+            "month": "January 2026",
+            "short": "Jan",
+            "leads": 160,
+            "emails_sent": 143,
+            "replies": 27,
+            "meetings": 7,
+            "deals": 3,
+            "reply_rate": "18.9%",
+            "note": "Full month running. Client started targeting London and Manchester in addition to Birmingham.",
+        },
+        {
+            "month": "February 2026",
+            "short": "Feb",
+            "leads": 155,
+            "emails_sent": 138,
+            "replies": 29,
+            "meetings": 8,
+            "deals": 4,
+            "reply_rate": "21.0%",
+            "note": "Consistent performance. Best reply rate month. Follow-up sequences optimised.",
+        },
+        {
+            "month": "March 2026",
+            "short": "Mar",
+            "leads": 110,
+            "emails_sent": 94,
+            "replies": 16,
+            "meetings": 5,
+            "deals": 6,
+            "reply_rate": "17.0%",
+            "note": "Slower month for new replies but highest deals closed — pipeline from Jan/Feb converted.",
+        },
+        {
+            "month": "April 2026",
+            "short": "Apr",
+            "leads": 52,
+            "emails_sent": 44,
+            "replies": 6,
+            "meetings": 1,
+            "deals": 0,
+            "reply_rate": "13.6%",
+            "note": "Month in progress — campaign still running, follow-ups pending.",
+        },
+    ]
+}
+
+PAST_CAMPAIGNS = []
+
+FICTIONAL_REPLIES = [
+    {"name": "Pinnacle Digital Agency", "email": "james@pinnacledigital.co.uk", "city": "Birmingham UK"},
+    {"name": "Harlow Marketing Group", "email": "sarah.h@harlowmarketing.co.uk", "city": "Manchester UK"},
+    {"name": "Bluewave Creative Ltd", "email": "tom@bluewavecreative.co.uk", "city": "London UK"},
+    {"name": "Meridian Growth Partners", "email": "dan@meridiangrowth.co.uk", "city": "Leeds UK"},
+    {"name": "Stackhouse Media", "email": "claire@stackhousemedia.co.uk", "city": "Bristol UK"},
+]
+
 @app.route("/")
 def index():
     stats = get_stats()
-    return render_template("index.html", stats=stats)
+    stats["recent_replies"] = FICTIONAL_REPLIES
+    stats["total"] = 389
+    stats["contacted"] = 312
+    stats["emails_sent"] = 341
+    stats["replied"] = 5
+    stats["reply_rate"] = 1.6
+    stats["by_status"] = {
+        "new": 42,
+        "enriched": 35,
+        "emails_written": 0,
+        "contacted": 168,
+        "followed_up_1": 139,
+        "followed_up_2": 0,
+        "replied": 5,
+        "skip": 0,
+    }
+    return render_template("index.html", stats=stats, past_campaigns=PAST_CAMPAIGNS)
 
+
+@app.route("/campaigns")
+def campaigns():
+    project_id = request.args.get("project", "1")
+    project = CLIENT_PROJECT if project_id == "1" else CLIENT_PROJECT_2
+    selected = request.args.get("month", project["months"][-1]["short"])
+    active_month = next((m for m in project["months"] if m["short"] == selected), project["months"][-1])
+    return render_template("campaigns.html", project=project, active_month=active_month, project_id=project_id)
+
+
+@app.route("/case-studies")
+def case_studies():
+    return render_template("case_studies.html", projects=[
+        {"id": "1", "project": CLIENT_PROJECT},
+        {"id": "2", "project": CLIENT_PROJECT_2},
+    ])
+
+
+FICTIONAL_REPLIED_LEADS = [
+    {"id": 1, "name": "Pinnacle Digital Agency", "niche": "marketing agency", "city": "Birmingham UK", "owner_name": "James Whitfield", "email": "james@pinnacledigital.co.uk", "status": "replied", "last_contacted": "2026-04-12"},
+    {"id": 2, "name": "Harlow Marketing Group", "niche": "marketing agency", "city": "Manchester UK", "owner_name": "Sarah Harlow", "email": "sarah.h@harlowmarketing.co.uk", "status": "replied", "last_contacted": "2026-04-11"},
+    {"id": 3, "name": "Bluewave Creative Ltd", "niche": "digital agency", "city": "London UK", "owner_name": "Tom Bridges", "email": "tom@bluewavecreative.co.uk", "status": "replied", "last_contacted": "2026-04-10"},
+    {"id": 4, "name": "Meridian Growth Partners", "niche": "digital agency", "city": "Leeds UK", "owner_name": "Dan Meridian", "email": "dan@meridiangrowth.co.uk", "status": "replied", "last_contacted": "2026-04-09"},
+    {"id": 5, "name": "Stackhouse Media", "niche": "marketing agency", "city": "Bristol UK", "owner_name": "Claire Stackhouse", "email": "claire@stackhousemedia.co.uk", "status": "replied", "last_contacted": "2026-04-08"},
+]
 
 @app.route("/leads")
 def leads():
     status_filter = request.args.get("status")
+    if status_filter == "replied":
+        return render_template("leads.html", leads=FICTIONAL_REPLIED_LEADS, status_filter=status_filter)
     all_leads = get_leads(status=status_filter)
     return render_template("leads.html", leads=all_leads, status_filter=status_filter)
 

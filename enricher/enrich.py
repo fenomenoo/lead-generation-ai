@@ -10,9 +10,48 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from tracker.db import get_leads, get_conn, update_lead
+from dotenv import load_dotenv
+load_dotenv()
 
 import requests
 from bs4 import BeautifulSoup
+
+PROSPEO_API_KEY = os.getenv("PROSPEO_API_KEY", "")
+
+# Import Snov module
+try:
+    from enricher.snov import find_decision_maker_snov, find_by_name_snov
+    SNOV_ENABLED = bool(os.getenv("SNOV_CLIENT_ID"))
+except ImportError:
+    SNOV_ENABLED = False
+
+
+def prospeo_find_email(full_name: str, domain: str) -> str | None:
+    """Query Prospeo Enrich Person API to find a real email for a named person at a domain."""
+    if not PROSPEO_API_KEY or not full_name or not domain:
+        return None
+    parts = full_name.strip().split()
+    if len(parts) < 2:
+        return None
+    first, last = parts[0], parts[-1]
+    try:
+        resp = requests.post(
+            "https://api.prospeo.io/enrich-person",
+            headers={"Content-Type": "application/json", "X-KEY": PROSPEO_API_KEY},
+            json={"data": {"first_name": first, "last_name": last, "company_website": domain}},
+            timeout=10,
+        )
+        data = resp.json()
+        if not data.get("error") and data.get("person"):
+            email_obj = data["person"].get("email", {})
+            email = email_obj.get("email", "")
+            status = email_obj.get("status", "")
+            # Only return if not masked and status is good
+            if email and "*" not in email and status in ("VERIFIED", "ACCEPT_ALL", "VALID"):
+                return email
+    except Exception:
+        pass
+    return None
 
 HEADERS = {
     "User-Agent": (
@@ -106,7 +145,29 @@ def enrich_all(limit: int = None, re_enrich: bool = False):
 
         if result.get("decision_maker_name"):
             fields["owner_name"] = result["decision_maker_name"]
-            print(f"      decision maker: {result['decision_maker_name']} ({result.get('decision_maker_title', '')})")
+            print("      decision maker: {} ({})".format(
+                result['decision_maker_name'].encode('ascii', 'replace').decode(),
+                result.get('decision_maker_title', '').encode('ascii', 'replace').decode()
+            ))
+
+        # If no email found from website, try Snov (domain search) first
+        from urllib.parse import urlparse
+        domain = urlparse(lead.get("website", "")).netloc.replace("www.", "")
+
+        if not fields.get("email") and SNOV_ENABLED and domain:
+            snov_result = find_decision_maker_snov(domain)
+            if snov_result:
+                fields["email"] = snov_result["email"]
+                if not fields.get("owner_name"):
+                    fields["owner_name"] = snov_result["name"]
+                print(f"      snov email: {snov_result['email']} ({snov_result['name']}, {snov_result['title']})")
+
+        # If we have a name but still no email, try Prospeo
+        if not fields.get("email") and result.get("decision_maker_name"):
+            prospeo_email = prospeo_find_email(result["decision_maker_name"], domain)
+            if prospeo_email:
+                fields["email"] = prospeo_email
+                print(f"      prospeo email: {prospeo_email}")
 
         if result.get("guessed_email"):
             if not fields.get("email"):

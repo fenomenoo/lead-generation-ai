@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% block title %}Case Study — UK Marketing Lead Gen{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <a href="/case-studies" class="btn btn-outline-secondary btn-sm mb-2">← All Case Studies</a>
+    <div class="page-title">{{ project.name }}</div>
+    <div class="page-subtitle">{{ project.niche }} &bull; {{ project.location }} &bull; Since {{ project.start_date }}</div>
+  </div>
+  <span class="badge px-3 py-2" style="background:#e8f5e9;color:#2e7d32;font-size:0.82rem;font-weight:600">● Active Client</span>
+</div>
+
+<!-- Overall totals -->
+{% set total_leads = project.months | sum(attribute='leads') %}
+{% set total_sent = project.months | sum(attribute='emails_sent') %}
+{% set total_replies = project.months | sum(attribute='replies') %}
+{% set total_deals = project.months | sum(attribute='deals') %}
+{% set total_meetings = project.months | sum(attribute='meetings') %}
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md">
+    <div class="stat-card">
+      <div class="label">Total Leads</div>
+      <div class="value">{{ total_leads }}</div>
+      <div class="sub">All months combined</div>
+    </div>
+  </div>
+  <div class="col-6 col-md">
+    <div class="stat-card">
+      <div class="label">Emails Sent</div>
+      <div class="value" style="color:#2563eb">{{ total_sent }}</div>
+      <div class="sub">Incl. follow-ups</div>
+    </div>
+  </div>
+  <div class="col-6 col-md">
+    <div class="stat-card">
+      <div class="label">Replies</div>
+      <div class="value" style="color:#b07d4f">{{ total_replies }}</div>
+      <div class="sub">Across all campaigns</div>
+    </div>
+  </div>
+  <div class="col-6 col-md">
+    <div class="stat-card">
+      <div class="label">Meetings</div>
+      <div class="value" style="color:#7c3aed">{{ total_meetings }}</div>
+      <div class="sub">Booked via system</div>
+    </div>
+  </div>
+  <div class="col-6 col-md">
+    <div class="stat-card">
+      <div class="label">Deals Closed</div>
+      <div class="value" style="color:#2e7d32">{{ total_deals }}</div>
+      <div class="sub">Converted clients</div>
+    </div>
+  </div>
+</div>
+
+<!-- Month switcher tabs -->
+<div class="card-light mb-4">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <span>Monthly Breakdown</span>
+    <div class="d-flex gap-2">
+      {% for m in project.months %}
+      <a href="/campaigns?project={{ project_id }}&month={{ m.short }}"
+         class="btn btn-sm {% if m.short == active_month.short %}btn-primary{% else %}btn-outline-secondary{% endif %}"
+         style="font-weight:600;min-width:52px">
+        {{ m.short }}{% if m.short == project.months[-1].short %} <span style="font-size:0.65rem">●</span>{% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="card-body">
+
+    <!-- Active month stats -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-2">
+        <div style="padding:16px;background:#f8f9fa;border-radius:10px;text-align:center">
+          <div style="font-size:0.72rem;color:#888;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;margin-bottom:6px">Leads</div>
+          <div style="font-size:2rem;font-weight:800;color:#1a1a2e">{{ active_month.leads }}</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div style="padding:16px;background:#eff6ff;border-radius:10px;text-align:center">
+          <div style="font-size:0.72rem;color:#888;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;margin-bottom:6px">Sent</div>
+          <div style="font-size:2rem;font-weight:800;color:#2563eb">{{ active_month.emails_sent }}</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div style="padding:16px;background:#fdf3ea;border-radius:10px;text-align:center">
+          <div style="font-size:0.72rem;color:#888;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;margin-bottom:6px">Replies</div>
+          <div style="font-size:2rem;font-weight:800;color:#b07d4f">{{ active_month.replies }}</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div style="padding:16px;background:#f5f3ff;border-radius:10px;text-align:center">
+          <div style="font-size:0.72rem;color:#888;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;margin-bottom:6px">Meetings</div>
+          <div style="font-size:2rem;font-weight:800;color:#7c3aed">{{ active_month.meetings }}</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div style="padding:16px;background:#f0fdf4;border-radius:10px;text-align:center">
+          <div style="font-size:0.72rem;color:#888;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;margin-bottom:6px">Deals</div>
+          <div style="font-size:2rem;font-weight:800;color:#2e7d32">{{ active_month.deals }}</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-2">
+        <div style="padding:16px;background:#fffbeb;border-radius:10px;text-align:center">
+          <div style="font-size:0.72rem;color:#888;text-transform:uppercase;letter-spacing:0.5px;font-weight:600;margin-bottom:6px">Reply Rate</div>
+          <div style="font-size:2rem;font-weight:800;color:#d97706">{{ active_month.reply_rate }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Month note -->
+    <div style="background:#f8f9fa;border-radius:8px;padding:14px 16px;border-left:3px solid #b07d4f">
+      <span style="font-size:0.78rem;color:#999;font-weight:600">{{ active_month.month }}: </span>
+      <span style="font-size:0.875rem;color:#555">{{ active_month.note }}</span>
+      {% if active_month.short == project.months[-1].short %}
+        <span class="ms-2 badge" style="background:#e3f0ff;color:#2563eb;font-size:0.72rem">In Progress</span>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Bar chart -->
+<div class="card-light mb-4">
+  <div class="card-header">Performance Over Time</div>
+  <div class="card-body">
+    <canvas id="monthlyChart" style="max-height:240px"></canvas>
+  </div>
+</div>
+
+<!-- Summary + testimonial -->
+<div class="row g-3 mb-4">
+  <div class="col-md-6">
+    <div class="card-light h-100">
+      <div class="card-header">About This Project</div>
+      <div class="card-body">
+        <p style="font-size:0.875rem;color:#555;line-height:1.75">{{ project.summary }}</p>
+        <div style="background:#f0fdf4;border-radius:8px;padding:12px 16px;border-left:3px solid #2e7d32;margin-top:12px">
+          <div style="font-size:0.75rem;color:#2e7d32;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:4px">Key Results</div>
+          <p style="font-size:0.875rem;color:#444;margin:0;font-weight:600">{{ project.results_summary }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card-light h-100">
+      <div class="card-header">Client Feedback</div>
+      <div class="card-body d-flex flex-column justify-content-center">
+        <div style="font-size:2.5rem;color:#e0d0c0;font-weight:800;line-height:1;margin-bottom:8px">"</div>
+        <p style="font-size:0.95rem;color:#444;font-style:italic;line-height:1.8;font-weight:500">{{ project.testimonial | replace('"', '') | replace('"', '') }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+const months = [{% for m in project.months %}"{{ m.short }}",{% endfor %}];
+const emailsSent = [{% for m in project.months %}{{ m.emails_sent }},{% endfor %}];
+const replies = [{% for m in project.months %}{{ m.replies }},{% endfor %}];
+const deals = [{% for m in project.months %}{{ m.deals }},{% endfor %}];
+
+new Chart(document.getElementById('monthlyChart'), {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [
+      { label: 'Emails Sent', data: emailsSent, backgroundColor: '#dce8fb', borderColor: '#2563eb', borderWidth: 1.5, borderRadius: 5 },
+      { label: 'Replies', data: replies, backgroundColor: '#fde8d0', borderColor: '#b07d4f', borderWidth: 1.5, borderRadius: 5 },
+      { label: 'Deals Closed', data: deals, backgroundColor: '#d4edda', borderColor: '#2e7d32', borderWidth: 1.5, borderRadius: 5 },
+    ]
+  },
+  options: {
+    plugins: { legend: { labels: { color: '#666', font: { size: 12, weight: '600' } } } },
+    scales: {
+      x: { ticks: { color: '#888', font: { size: 12 } }, grid: { color: '#f0f0f4' } },
+      y: { ticks: { color: '#888', font: { size: 12 } }, grid: { color: '#f0f0f4' } },
+    }
+  }
+});
+</script>
+{% endblock %}

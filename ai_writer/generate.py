@@ -52,30 +52,52 @@ def _generate_sequence(client: anthropic.Anthropic, lead: dict) -> dict:
     description = lead.get("description") or f"a {niche} based in {city}"
     website = lead.get("website") or ""
 
-    system_prompt = f"""You are {SENDER_NAME} from {SENDER_COMPANY}, an AI automation specialist
-who helps real estate companies and local businesses get significantly more customers using AI.
-You write cold outreach emails that are direct, specific, and revenue-focused.
-Tone: confident, professional, peer-to-peer — not salesy, not generic, not desperate.
+    system_prompt = f"""You are {SENDER_NAME}, a Python automation developer based in Lagos, Nigeria.
+You build custom automation tools for businesses — lead generation pipelines, web scraping systems,
+outreach automation, AI integrations, and Flask dashboards.
+You write cold outreach emails that are direct, specific, and value-focused.
+Tone: confident, professional, peer-to-peer — not salesy, not desperate, not generic.
 Length: 150-200 words per email. One clear CTA per email.
-Never use exclamation marks in subject lines. Never use phrases like "I hope this finds you well."
-Always make it clear you understand their business specifically."""
+Never use exclamation marks in subject lines. Never use "I hope this finds you well."
+Always make it clear you understand their specific business and what they likely do manually."""
 
-    owner_first = owner.split()[0] if owner != "there" else "there"
+    # Only use name if it looks like a real person's first name
+    NOT_NAMES = {
+        "digital", "marketing", "agency", "manager", "director", "client", "team",
+        "great", "when", "hello", "info", "sales", "contact", "support", "admin",
+        "general", "business", "company", "services", "solutions", "group", "media",
+        "communications", "consulting", "management", "operations", "the", "our",
+        "your", "their", "this", "that", "with", "from", "about", "office",
+        "personal", "assistant", "executive", "associate", "coordinator", "specialist",
+        "consultant", "analyst", "recruiter", "recruitment", "staffing", "hiring",
+        "driven", "leading", "building", "helping", "growing", "centres", "giving"
+    }
+    owner_parts = owner.split() if owner != "there" else []
+    if (len(owner_parts) >= 1
+            and owner_parts[0][0].isupper()
+            and owner_parts[0].isalpha()
+            and len(owner_parts[0]) > 2
+            and owner_parts[0].lower() not in NOT_NAMES):
+        owner_first = owner_parts[0]
+    else:
+        owner_first = "there"
 
-    user_prompt = f"""Write a 3-email cold outreach sequence for this real estate company.
+    user_prompt = f"""Write a 3-email cold outreach sequence for this business from a Python automation developer.
 
 Business: {business_name}
+Niche: {niche}
 City: {city}
 Contact name: {owner_first}
 Website: {website}
 About them: {description}
 
-THE PITCH (work this into every email naturally):
-- We build AI-powered systems that automatically find, qualify, and nurture leads for real estate companies
-- This means they stop relying on referrals or cold calls and get a consistent pipeline of serious buyers and investors
-- Real estate companies using this see 30-50% more qualified inquiries within 60 days
-- We handle the full setup — they just handle the conversations with interested clients
-- We want to get on a quick call to walk them through exactly how it works for their specific market
+WHO I AM AND WHAT I OFFER (work this into every email naturally):
+- I'm a Python developer who builds automation tools that replace manual, repetitive work
+- I specialize in: lead generation pipelines, web scraping, outreach automation, AI integrations, Flask dashboards
+- I've built systems that scrape thousands of leads from Google Maps and websites, enrich contacts automatically, write AI-personalized emails, and send them — all without manual effort
+- My GitHub shows real working projects: github.com/fenomenoo
+- I work remotely and am available for freelance projects, contracts, and full-time remote roles
+- The pitch: if they're doing lead research, data extraction, outreach, or any repetitive data work manually — I can build a system to automate it and save them significant time and money
 
 Return EXACTLY this JSON (no markdown, no extra text):
 {{
@@ -94,12 +116,13 @@ Return EXACTLY this JSON (no markdown, no extra text):
 }}
 
 Email rules:
-- initial: open with something specific about their business, explain the AI lead gen system briefly, show the revenue upside (more qualified buyers = more closings), end with a soft CTA to hop on a 15-min call to discuss how we execute this for them specifically
-- followup1 (day {FOLLOWUP_1_DAYS}): reference the first email, add urgency or a specific result/stat, mention they can see exactly what the system looks like at theclientmachine.netlify.app, re-invite them to a quick call
-- followup2 (day {FOLLOWUP_2_DAYS}): short breakup email, mention the website one last time (theclientmachine.netlify.app) if they want to see how it works, make it easy to say yes or no, leave the door open with no pressure
+- initial: open with something specific about their business or niche, identify one thing they likely do manually (lead research, outreach, data collection), show how automation solves it, reference github.com/fenomenoo as proof of work, end with a soft CTA for a quick call or reply
+- followup1 (day {FOLLOWUP_1_DAYS}): reference the first email briefly, add a specific example of what I built (e.g. "I built a system that pulled 2,000 leads from Google Maps and sent personalized emails automatically"), re-invite them to chat
+- followup2 (day {FOLLOWUP_2_DAYS}): short breakup email, make it easy to say yes or no, leave door open, mention github.com/fenomenoo one last time
 - Address contact as Hi {owner_first}
-- Sign every email: {SENDER_NAME}, {SENDER_COMPANY}
-- Keep it human — no buzzword soup, no corporate speak"""
+- Sign every email: {SENDER_NAME} | Python Automation Developer | gbolahanlawal57@gmail.com
+- Keep it human — no buzzword soup, no corporate speak, no "I am writing to express my interest"
+"""
 
     message = client.messages.create(
         model=MODEL,

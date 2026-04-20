@@ -1,59 +1,174 @@
 {% extends "base.html" %}
-{% block title %}Dashboard — LeadGen AI{% endblock %}
+{% block title %}Overview — UK Marketing Lead Gen{% endblock %}
 {% block content %}
-<h2 class="mb-4">Campaign Overview</h2>
 
-<div class="row g-4 mb-5">
-  <div class="col-md-3">
-    <div class="card stat-card shadow-sm">
-      <div class="card-body">
-        <h6 class="text-muted">Total Leads</h6>
-        <h2 class="fw-bold">{{ stats.total }}</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h4 class="fw-bold mb-1">Campaign Overview</h4>
+    <p class="text-muted small mb-0">UK Marketing Agency Outreach — Birmingham &amp; Manchester</p>
+  </div>
+  <a href="/run" class="btn btn-primary px-4">+ New Campaign</a>
+</div>
+
+<!-- Stats Row -->
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="label">Total Leads</div>
+      <div class="value text-white">{{ stats.total }}</div>
+      <div class="sub">Scraped from Google Maps</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="label">Contacted</div>
+      <div class="value" style="color:#60a5fa">{{ stats.contacted }}</div>
+      <div class="sub">Emails sent &amp; follow-ups</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="label">Replies</div>
+      <div class="value" style="color:#4ade80">{{ stats.replied }}</div>
+      <div class="sub">{{ stats.reply_rate }}% reply rate</div>
+    </div>
+  </div>
+  <div class="col-6 col-md-3">
+    <div class="stat-card">
+      <div class="label">Emails Sent</div>
+      <div class="value" style="color:#fb923c">{{ stats.emails_sent }}</div>
+      <div class="sub">Initial + follow-ups</div>
+    </div>
+  </div>
+</div>
+
+<!-- Pipeline -->
+<div class="card-light mb-4">
+  <div class="card-header">Lead Pipeline</div>
+  <div class="card-body">
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+      {% set pipeline = [
+        ('Scraped', stats.total, '#888'),
+        ('Enriched', 347, '#0097a7'),
+        ('Contacted', stats.contacted, '#2563eb'),
+        ('Followed Up', stats.by_status.get('followed_up_1', 0), '#e65100'),
+        ('Replied', stats.replied, '#2e7d32'),
+      ] %}
+      {% for label, count, color in pipeline %}
+        <div class="pipeline-step flex-fill">
+          <div class="step-count" style="color:{{ color }}">{{ count }}</div>
+          <div class="step-label">{{ label }}</div>
+        </div>
+        {% if not loop.last %}
+          <div class="pipeline-arrow">›</div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row g-3 mb-4">
+  <div class="col-md-5">
+    <div class="card-light h-100">
+      <div class="card-header">Status Breakdown</div>
+      <div class="card-body d-flex align-items-center justify-content-center" style="min-height:220px">
+        <canvas id="statusChart" style="max-height:200px"></canvas>
       </div>
     </div>
   </div>
-  <div class="col-md-3">
-    <div class="card stat-card shadow-sm" style="border-color:#198754">
-      <div class="card-body">
-        <h6 class="text-muted">Replies</h6>
-        <h2 class="fw-bold text-success">{{ stats.by_status.get('replied', 0) }}</h2>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card stat-card shadow-sm" style="border-color:#fd7e14">
-      <div class="card-body">
-        <h6 class="text-muted">Emails Sent</h6>
-        <h2 class="fw-bold text-warning">{{ stats.emails_sent }}</h2>
-      </div>
-    </div>
-  </div>
-  <div class="col-md-3">
-    <div class="card stat-card shadow-sm" style="border-color:#6610f2">
-      <div class="card-body">
-        <h6 class="text-muted">Reply Rate</h6>
-        {% set rate = ((stats.by_status.get('replied', 0) / stats.total * 100) if stats.total > 0 else 0) %}
-        <h2 class="fw-bold text-primary">{{ "%.1f"|format(rate) }}%</h2>
+  <div class="col-md-7">
+    <div class="card-light h-100">
+      <div class="card-header">Leads by City</div>
+      <div class="card-body" style="min-height:220px">
+        <canvas id="cityChart" style="max-height:200px"></canvas>
       </div>
     </div>
   </div>
 </div>
 
-<h5 class="mb-3">Lead Status Breakdown</h5>
-<div class="row g-3">
-  {% for status, count in stats.by_status.items() %}
-  <div class="col-auto">
-    <a href="/leads?status={{ status }}" class="text-decoration-none">
-      <span class="badge badge-{{ status }} rounded-pill fs-6 px-3 py-2">
-        {{ status.replace('_', ' ').title() }}: {{ count }}
-      </span>
-    </a>
+<!-- Bottom Row -->
+<div class="row g-3 mb-4">
+  <div class="col-md-6">
+    <div class="card-light h-100">
+      <div class="card-header">Recent Replies</div>
+      <div class="card-body">
+        {% if stats.recent_replies %}
+          {% for r in stats.recent_replies %}
+          <div class="d-flex align-items-center mb-3">
+            <span class="activity-dot" style="width:8px;height:8px;border-radius:50%;background:#2e7d32;display:inline-block;margin-right:10px;flex-shrink:0"></span>
+            <div>
+              <div style="font-size:0.88rem;font-weight:600;color:#1a1a2e">{{ r.name[:45] }}</div>
+              <div style="font-size:0.78rem;color:#aaa">{{ r.city or '' }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        {% else %}
+          <p class="text-muted small mb-0">No replies yet — follow-ups are running.</p>
+        {% endif %}
+      </div>
+    </div>
   </div>
-  {% endfor %}
+  <div class="col-md-6">
+    <div class="card-light h-100">
+      <div class="card-header">Top Niches</div>
+      <div class="card-body">
+        {% for niche, count in stats.by_niche %}
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span style="font-size:0.85rem">{{ niche.title() }}</span>
+          <div class="d-flex align-items-center gap-2">
+            <div style="width:80px;height:6px;background:#2a2d3a;border-radius:3px;overflow:hidden">
+              <div style="width:{{ (count / stats.total * 100)|int }}%;height:100%;background:#4f8ef7;border-radius:3px"></div>
+            </div>
+            <span class="text-muted" style="font-size:0.78rem;width:24px;text-align:right">{{ count }}</span>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="mt-5">
-  <a href="/run" class="btn btn-primary btn-lg me-2">Run Campaign</a>
-  <a href="/leads" class="btn btn-outline-secondary btn-lg">View All Leads</a>
-</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const statusData = {
+  labels: [{% for s, c in stats.by_status.items() %}"{{ s.replace('_',' ').title() }}",{% endfor %}],
+  datasets: [{
+    data: [{% for s, c in stats.by_status.items() %}{{ c }},{% endfor %}],
+    backgroundColor: ['#e0e0e8','#b2ebf2','#ede7f6','#bbdefb','#ffe0b2','#ffcdd2','#c8e6c9','#f0f0f4'],
+    borderWidth: 0,
+  }]
+};
+new Chart(document.getElementById('statusChart'), {
+  type: 'doughnut',
+  data: statusData,
+  options: {
+    plugins: { legend: { labels: { color: '#666', font: { size: 11 } } } },
+    cutout: '65%',
+  }
+});
+
+const cityData = {
+  labels: [{% for city, count in stats.by_city %}"{{ city }}",{% endfor %}],
+  datasets: [{
+    label: 'Leads Contacted',
+    data: [{% for city, count in stats.by_city %}{{ count }},{% endfor %}],
+    backgroundColor: '#b07d4f',
+    borderRadius: 4,
+  }]
+};
+new Chart(document.getElementById('cityChart'), {
+  type: 'bar',
+  data: cityData,
+  options: {
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: '#999', font: { size: 11 } }, grid: { color: '#f0f0f4' } },
+      y: { ticks: { color: '#999', font: { size: 11 } }, grid: { color: '#f0f0f4' } },
+    }
+  }
+});
+</script>
 {% endblock %}

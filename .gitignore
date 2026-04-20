@@ -1,5 +1,8 @@
 # Environment & secrets
 .env
+google_creds.json
+oauth_creds.json
+token.pkl
 
 # Database files
 *.db
