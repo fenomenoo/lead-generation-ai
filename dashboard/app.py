@@ -5,10 +5,6 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from tracker.db import get_stats, get_leads, get_lead, get_emails_for_lead, update_lead
-from scraper.google_maps import scrape
-from enricher.enrich import enrich_all
-from ai_writer.generate import write_emails_for_all
-from sender.send import send_due_emails, mark_replied, mark_unsubscribed
 
 from flask import Flask, render_template, request, redirect, url_for, flash
 
@@ -364,6 +360,7 @@ def run_campaign():
 
         if action == "scrape" and niche and city:
             try:
+                from scraper.google_maps import scrape
                 results = scrape(niche, city, limit)
                 flash(f"Scraped {len(results)} leads for '{niche}' in '{city}'.", "success")
             except Exception as e:
@@ -371,6 +368,7 @@ def run_campaign():
 
         elif action == "enrich":
             try:
+                from enricher.enrich import enrich_all
                 enrich_all(limit=limit)
                 flash("Enrichment complete.", "success")
             except Exception as e:
@@ -378,6 +376,7 @@ def run_campaign():
 
         elif action == "write":
             try:
+                from ai_writer.generate import write_emails_for_all
                 write_emails_for_all(limit=limit)
                 flash("Email sequences generated.", "success")
             except Exception as e:
@@ -385,6 +384,7 @@ def run_campaign():
 
         elif action == "send":
             try:
+                from sender.send import send_due_emails
                 send_due_emails(limit=limit, dry_run=False)
                 flash(f"Sent up to {limit} emails.", "success")
             except Exception as e:
@@ -392,6 +392,7 @@ def run_campaign():
 
         elif action == "dry_run":
             try:
+                from sender.send import send_due_emails
                 send_due_emails(limit=limit, dry_run=True)
                 flash("Dry run complete — check the terminal for preview.", "success")
             except Exception as e:
