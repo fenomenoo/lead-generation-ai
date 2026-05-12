@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login — LeadGen AI</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #f4f5f7;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #e8e8ec;
+      border-radius: 16px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .brand {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #1a1a2e;
+      margin-bottom: 8px;
+    }
+    .brand span { color: #b07d4f; }
+    .subtitle {
+      font-size: 0.82rem;
+      color: #aaa;
+      margin-bottom: 32px;
+    }
+    label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 6px;
+    }
+    input[type="password"] {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid #e0e0e8;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      color: #1a1a2e;
+      outline: none;
+      transition: border-color 0.15s;
+      margin-bottom: 20px;
+    }
+    input[type="password"]:focus {
+      border-color: #b07d4f;
+      box-shadow: 0 0 0 3px rgba(176,125,79,0.12);
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #b07d4f;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    button:hover { background: #9a6b3e; }
+    .error {
+      background: #fce4ec;
+      border: 1px solid #f8bbd9;
+      color: #c62828;
+      font-size: 0.82rem;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+    .back {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.8rem;
+      color: #aaa;
+      text-decoration: none;
+    }
+    .back:hover { color: #666; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">LeadGen<span> AI</span></div>
+    <div class="subtitle">Admin access only</div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}
+        <div class="error">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <form method="POST">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" placeholder="Enter admin password" autofocus />
+      <button type="submit">Log In</button>
+    </form>
+
+    <a href="/" class="back">← Back to dashboard</a>
+  </div>
+</body>
+</html>

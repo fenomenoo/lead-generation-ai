@@ -3,13 +3,26 @@ Flask web dashboard for monitoring the lead generation campaigns.
 """
 import sys
 import os
+import functools
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from tracker.db import get_stats, get_leads, get_lead, get_emails_for_lead, update_lead
 
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 
 app = Flask(__name__, template_folder="../templates")
-app.secret_key = os.urandom(24)
+app.secret_key = os.environ.get("SECRET_KEY", os.urandom(24))
+
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "admin1234")
+
+
+def admin_required(f):
+    @functools.wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get("is_admin"):
+            flash("Please log in to access that page.", "error")
+            return redirect(url_for("login", next=request.path))
+        return f(*args, **kwargs)
+    return decorated
 
 
 CLIENT_PROJECT_2 = {
@@ -314,6 +327,26 @@ def pitch():
     return render_template("pitch.html")
 
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if session.get("is_admin"):
+        return redirect(url_for("index"))
+    if request.method == "POST":
+        if request.form.get("password") == ADMIN_PASSWORD:
+            session["is_admin"] = True
+            session.permanent = True
+            next_url = request.args.get("next") or url_for("index")
+            return redirect(next_url)
+        flash("Incorrect password.", "error")
+    return render_template("login.html")
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("index"))
+
+
 FICTIONAL_REPLIED_LEADS = [
     {"id": 1, "name": "Pinnacle Digital Agency", "niche": "marketing agency", "city": "Birmingham UK", "owner_name": "James Whitfield", "email": "james@pinnacledigital.co.uk", "status": "replied", "last_contacted": "2026-04-12"},
     {"id": 2, "name": "Harlow Marketing Group", "niche": "marketing agency", "city": "Manchester UK", "owner_name": "Sarah Harlow", "email": "sarah.h@harlowmarketing.co.uk", "status": "replied", "last_contacted": "2026-04-11"},
@@ -323,6 +356,7 @@ FICTIONAL_REPLIED_LEADS = [
 ]
 
 @app.route("/leads")
+@admin_required
 def leads():
     status_filter = request.args.get("status")
     if status_filter == "replied":
@@ -332,6 +366,7 @@ def leads():
 
 
 @app.route("/leads/<int:lead_id>")
+@admin_required
 def lead_detail(lead_id):
     lead = get_lead(lead_id)
     if not lead:
@@ -342,6 +377,7 @@ def lead_detail(lead_id):
 
 
 @app.route("/leads/<int:lead_id>/status", methods=["POST"])
+@admin_required
 def update_status(lead_id):
     new_status = request.form.get("status")
     if new_status in ("replied", "unsubscribed", "bounced", "not_interested"):
@@ -351,6 +387,7 @@ def update_status(lead_id):
 
 
 @app.route("/run", methods=["GET", "POST"])
+@admin_required
 def run_campaign():
     if request.method == "POST":
         niche = request.form.get("niche", "").strip()
