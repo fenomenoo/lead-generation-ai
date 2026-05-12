@@ -3,6 +3,18 @@
 {% block content %}
 <h2 class="mb-4">Run Campaign</h2>
 
+<div style="background:#fff8e1;border:1.5px solid #f9a825;border-radius:10px;padding:16px 20px;margin-bottom:28px;display:flex;align-items:flex-start;gap:14px">
+  <span style="font-size:1.4rem;line-height:1">⚠️</span>
+  <div>
+    <div style="font-weight:700;color:#7a5000;margin-bottom:4px;font-size:0.9rem">Local only — won't run on Vercel</div>
+    <div style="font-size:0.85rem;color:#8a6000;line-height:1.6">
+      Scraping, enriching, and sending require Playwright and local dependencies that can't run on a cloud server.
+      To run a real campaign, use your machine:<br/>
+      <code style="background:#fff3cd;padding:2px 8px;border-radius:4px;font-size:0.82rem">python main.py scrape --niche "real estate agent" --city "Austin TX" --limit 50</code>
+    </div>
+  </div>
+</div>
+
 <div class="row g-4">
   <!-- Scrape -->
   <div class="col-md-6">
