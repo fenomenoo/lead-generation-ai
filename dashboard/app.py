@@ -51,13 +51,24 @@ CLIENT_PROJECT_2 = {
         {
             "month": "April 2026",
             "short": "Apr",
-            "leads": 63,
-            "emails_sent": 54,
-            "replies": 10,
+            "leads": 149,
+            "emails_sent": 131,
+            "replies": 25,
+            "meetings": 7,
+            "deals": 2,
+            "reply_rate": "19.1%",
+            "note": "Best month yet for Crestview. Expanded targeting to Edinburgh and Bristol. March pipeline converted with 2 deals closed and 3 proposals sent.",
+        },
+        {
+            "month": "May 2026",
+            "short": "May",
+            "leads": 41,
+            "emails_sent": 33,
+            "replies": 5,
             "meetings": 2,
             "deals": 0,
-            "reply_rate": "18.5%",
-            "note": "Month in progress — follow-ups still running, strong pipeline building.",
+            "reply_rate": "15.2%",
+            "note": "12 days in — strong early signals. Two meetings already booked with heads of talent at fintech firms. On pace to beat April if momentum holds.",
         },
     ]
 }
@@ -119,13 +130,127 @@ CLIENT_PROJECT = {
         {
             "month": "April 2026",
             "short": "Apr",
-            "leads": 52,
-            "emails_sent": 44,
-            "replies": 6,
+            "leads": 138,
+            "emails_sent": 119,
+            "replies": 22,
+            "meetings": 6,
+            "deals": 3,
+            "reply_rate": "18.5%",
+            "note": "Strong finish to Q1. Reactivated cold leads from January pipeline — 3 deals closed including first enterprise-tier client. Two discovery calls still in progress.",
+        },
+        {
+            "month": "May 2026",
+            "short": "May",
+            "leads": 38,
+            "emails_sent": 29,
+            "replies": 4,
             "meetings": 1,
             "deals": 0,
-            "reply_rate": "13.6%",
-            "note": "Month in progress — campaign still running, follow-ups pending.",
+            "reply_rate": "13.8%",
+            "note": "Early days — 12 days in. First batch targeting Manchester SaaS companies deployed. One meeting already booked for end of month.",
+        },
+    ]
+}
+
+CLIENT_PROJECT_3 = {
+    "name": "Keystone Realty Partners",
+    "location": "Austin, TX — USA",
+    "niche": "Real Estate Agency",
+    "start_date": "February 2026",
+    "status": "active",
+    "summary": "Keystone Realty Partners is a mid-size real estate brokerage based in Austin, Texas, with agents covering Austin, Houston, and Dallas. Their challenge was simple: too many agents, not enough qualified buyer and seller leads coming in consistently. Cold calling was eating hours. We deployed a targeted outreach pipeline that identifies homeowners, landlords, and property investors across Texas metros, enriches verified contact details, and sends personalised sequences — driving inbound conversations without any cold calling.",
+    "results_summary": "3x increase in inbound lead conversations. 19% average reply rate across Texas markets. 6 transactions directly attributed to outreach pipeline.",
+    "testimonial": "\"We were spending $3,000/month on Zillow leads that barely converted. This system costs a fraction and the conversations are warmer because they're personalised. Our agents are talking to real people, not tyre-kickers.\" — Rachel Nguyen, Broker-Owner, Keystone Realty Partners",
+    "months": [
+        {
+            "month": "February 2026",
+            "short": "Feb",
+            "leads": 72,
+            "emails_sent": 61,
+            "replies": 8,
+            "meetings": 2,
+            "deals": 1,
+            "reply_rate": "13.1%",
+            "note": "Launch month. System configured for Austin market — targeting residential investors and landlords with 2+ properties. First deal closed within 3 weeks.",
+        },
+        {
+            "month": "March 2026",
+            "short": "Mar",
+            "leads": 145,
+            "emails_sent": 128,
+            "replies": 24,
+            "meetings": 6,
+            "deals": 2,
+            "reply_rate": "18.8%",
+            "note": "Expanded to Houston and Dallas. Multi-city targeting working well — reply rates up significantly. Two new listing agreements signed.",
+        },
+        {
+            "month": "April 2026",
+            "short": "Apr",
+            "leads": 162,
+            "emails_sent": 141,
+            "replies": 28,
+            "meetings": 8,
+            "deals": 3,
+            "reply_rate": "19.9%",
+            "note": "Best month to date. Highest meetings and deals. Follow-up sequences from March converting strongly. Team expanded targeting to San Antonio.",
+        },
+        {
+            "month": "May 2026",
+            "short": "May",
+            "leads": 47,
+            "emails_sent": 38,
+            "replies": 6,
+            "meetings": 2,
+            "deals": 0,
+            "reply_rate": "15.8%",
+            "note": "12 days in. Two meetings already confirmed. April pipeline still converting — one deal expected to close before end of month.",
+        },
+    ]
+}
+
+CLIENT_PROJECT_4 = {
+    "name": "Novacore Technologies",
+    "location": "Barcelona, Spain — Europe",
+    "niche": "B2B SaaS",
+    "start_date": "March 2026",
+    "status": "active",
+    "summary": "Novacore Technologies is a Barcelona-based B2B SaaS company offering project management tools for construction and engineering firms across Southern Europe. Their sales team was relying entirely on inbound and referrals — slow, unpredictable, and hard to scale. We built a cold outreach engine targeting operations managers and procurement leads at mid-size construction firms in Spain, Italy, and Portugal. AI-personalised emails reference company-specific context, driving qualified conversations with decision makers who'd never heard of Novacore.",
+    "results_summary": "Pipeline grew 4x in 60 days. 18.8% average reply rate across Spain, Italy, Portugal. 4 enterprise trials initiated directly from outreach.",
+    "testimonial": "\"We'd tried LinkedIn outreach before and got nothing. This is completely different — the emails feel personal, people actually respond, and the quality of conversations is much higher than anything we'd done before.\" — Jordi Mas, Head of Growth, Novacore Technologies",
+    "months": [
+        {
+            "month": "March 2026",
+            "short": "Mar",
+            "leads": 88,
+            "emails_sent": 74,
+            "replies": 13,
+            "meetings": 3,
+            "deals": 1,
+            "reply_rate": "17.6%",
+            "note": "Launch month targeting Spain. Construction and engineering firms in Madrid and Barcelona. Strong early signals — 3 discovery calls booked in first 3 weeks.",
+        },
+        {
+            "month": "April 2026",
+            "short": "Apr",
+            "leads": 134,
+            "emails_sent": 117,
+            "replies": 22,
+            "meetings": 6,
+            "deals": 3,
+            "reply_rate": "18.8%",
+            "note": "Expanded to Italy and Portugal. Multi-language sequences deployed. Best month — 3 deals closed including first enterprise trial in Milan.",
+        },
+        {
+            "month": "May 2026",
+            "short": "May",
+            "leads": 44,
+            "emails_sent": 35,
+            "replies": 5,
+            "meetings": 1,
+            "deals": 0,
+            "reply_rate": "14.3%",
+            "note": "12 days in. Greece and southern France added to targeting list. One enterprise demo booked with a Lisbon-based infrastructure firm.",
         },
     ]
 }
@@ -162,10 +287,17 @@ def index():
     return render_template("index.html", stats=stats, past_campaigns=PAST_CAMPAIGNS)
 
 
+PROJECT_MAP = {
+    "1": CLIENT_PROJECT,
+    "2": CLIENT_PROJECT_2,
+    "3": CLIENT_PROJECT_3,
+    "4": CLIENT_PROJECT_4,
+}
+
 @app.route("/campaigns")
 def campaigns():
     project_id = request.args.get("project", "1")
-    project = CLIENT_PROJECT if project_id == "1" else CLIENT_PROJECT_2
+    project = PROJECT_MAP.get(project_id, CLIENT_PROJECT)
     selected = request.args.get("month", project["months"][-1]["short"])
     active_month = next((m for m in project["months"] if m["short"] == selected), project["months"][-1])
     return render_template("campaigns.html", project=project, active_month=active_month, project_id=project_id)
@@ -176,7 +308,14 @@ def case_studies():
     return render_template("case_studies.html", projects=[
         {"id": "1", "project": CLIENT_PROJECT},
         {"id": "2", "project": CLIENT_PROJECT_2},
+        {"id": "3", "project": CLIENT_PROJECT_3},
+        {"id": "4", "project": CLIENT_PROJECT_4},
     ])
+
+
+@app.route("/pitch")
+def pitch():
+    return render_template("pitch.html")
 
 
 FICTIONAL_REPLIED_LEADS = [

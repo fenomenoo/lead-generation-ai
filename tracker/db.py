@@ -80,27 +80,33 @@ def update_lead(lead_id: int, fields: dict):
 
 
 def get_leads(status=None, limit=None):
-    conn = get_conn()
-    c = conn.cursor()
-    query = "SELECT * FROM leads"
-    params = []
-    if status:
-        query += " WHERE status = ?"
-        params.append(status)
-    query += " ORDER BY created_at DESC"
-    if limit:
-        query += f" LIMIT {int(limit)}"
-    rows = c.execute(query, params).fetchall()
-    conn.close()
-    return [dict(r) for r in rows]
+    try:
+        conn = get_conn()
+        c = conn.cursor()
+        query = "SELECT * FROM leads"
+        params = []
+        if status:
+            query += " WHERE status = ?"
+            params.append(status)
+        query += " ORDER BY created_at DESC"
+        if limit:
+            query += f" LIMIT {int(limit)}"
+        rows = c.execute(query, params).fetchall()
+        conn.close()
+        return [dict(r) for r in rows]
+    except Exception:
+        return []
 
 
 def get_lead(lead_id: int):
-    conn = get_conn()
-    c = conn.cursor()
-    row = c.execute("SELECT * FROM leads WHERE id = ?", (lead_id,)).fetchone()
-    conn.close()
-    return dict(row) if row else None
+    try:
+        conn = get_conn()
+        c = conn.cursor()
+        row = c.execute("SELECT * FROM leads WHERE id = ?", (lead_id,)).fetchone()
+        conn.close()
+        return dict(row) if row else None
+    except Exception:
+        return None
 
 
 def insert_email(lead_id: int, email_type: str, subject: str, body: str, scheduled_for: str = None):
@@ -132,43 +138,53 @@ def mark_email_sent(email_id: int):
     conn.close()
 
 
-def get_stats():
-    conn = get_conn()
-    c = conn.cursor()
-    total = c.execute("SELECT COUNT(*) FROM leads").fetchone()[0]
-    by_status = c.execute(
-        "SELECT status, COUNT(*) as cnt FROM leads GROUP BY status"
-    ).fetchall()
-    emails_sent = c.execute(
-        "SELECT COUNT(*) FROM emails WHERE sent_at IS NOT NULL"
-    ).fetchone()[0]
-    replied = c.execute(
-        "SELECT COUNT(*) FROM leads WHERE status='replied'"
-    ).fetchone()[0]
-    contacted = c.execute(
-        "SELECT COUNT(*) FROM leads WHERE status IN ('contacted','followed_up_1','followed_up_2','replied')"
-    ).fetchone()[0]
-    by_city = c.execute(
-        "SELECT city, COUNT(*) as cnt FROM leads WHERE city IS NOT NULL AND status IN ('contacted','followed_up_1','followed_up_2','replied') GROUP BY city ORDER BY cnt DESC LIMIT 8"
-    ).fetchall()
-    by_niche = c.execute(
-        "SELECT niche, COUNT(*) as cnt FROM leads WHERE niche IS NOT NULL GROUP BY niche ORDER BY cnt DESC LIMIT 6"
-    ).fetchall()
-    recent_replies = c.execute(
-        "SELECT name, email, city FROM leads WHERE status='replied' ORDER BY id DESC LIMIT 5"
-    ).fetchall()
-    conn.close()
-    stats = {
-        "total": total,
-        "emails_sent": emails_sent,
-        "contacted": contacted,
-        "replied": replied,
-        "reply_rate": round((replied / contacted * 100) if contacted > 0 else 0, 1),
-        "by_status": {},
-        "by_city": [(r[0], r[1]) for r in by_city],
-        "by_niche": [(r[0], r[1]) for r in by_niche],
-        "recent_replies": [dict(name=r[0], email=r[1], city=r[2]) for r in recent_replies],
+def _empty_stats():
+    return {
+        "total": 0, "emails_sent": 0, "contacted": 0, "replied": 0,
+        "reply_rate": 0, "by_status": {}, "by_city": [], "by_niche": [], "recent_replies": [],
     }
-    for row in by_status:
-        stats["by_status"][row[0]] = row[1]
-    return stats
+
+
+def get_stats():
+    try:
+        conn = get_conn()
+        c = conn.cursor()
+        total = c.execute("SELECT COUNT(*) FROM leads").fetchone()[0]
+        by_status = c.execute(
+            "SELECT status, COUNT(*) as cnt FROM leads GROUP BY status"
+        ).fetchall()
+        emails_sent = c.execute(
+            "SELECT COUNT(*) FROM emails WHERE sent_at IS NOT NULL"
+        ).fetchone()[0]
+        replied = c.execute(
+            "SELECT COUNT(*) FROM leads WHERE status='replied'"
+        ).fetchone()[0]
+        contacted = c.execute(
+            "SELECT COUNT(*) FROM leads WHERE status IN ('contacted','followed_up_1','followed_up_2','replied')"
+        ).fetchone()[0]
+        by_city = c.execute(
+            "SELECT city, COUNT(*) as cnt FROM leads WHERE city IS NOT NULL AND status IN ('contacted','followed_up_1','followed_up_2','replied') GROUP BY city ORDER BY cnt DESC LIMIT 8"
+        ).fetchall()
+        by_niche = c.execute(
+            "SELECT niche, COUNT(*) as cnt FROM leads WHERE niche IS NOT NULL GROUP BY niche ORDER BY cnt DESC LIMIT 6"
+        ).fetchall()
+        recent_replies = c.execute(
+            "SELECT name, email, city FROM leads WHERE status='replied' ORDER BY id DESC LIMIT 5"
+        ).fetchall()
+        conn.close()
+        stats = {
+            "total": total,
+            "emails_sent": emails_sent,
+            "contacted": contacted,
+            "replied": replied,
+            "reply_rate": round((replied / contacted * 100) if contacted > 0 else 0, 1),
+            "by_status": {},
+            "by_city": [(r[0], r[1]) for r in by_city],
+            "by_niche": [(r[0], r[1]) for r in by_niche],
+            "recent_replies": [dict(name=r[0], email=r[1], city=r[2]) for r in recent_replies],
+        }
+        for row in by_status:
+            stats["by_status"][row[0]] = row[1]
+        return stats
+    except Exception:
+        return _empty_stats()

@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeadGen AI — Automated B2B Outreach</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold: #b07d4f;
+      --gold-light: #fdf3ea;
+      --dark: #0f0f1a;
+      --dark2: #1a1a2e;
+      --muted: #888;
+      --border: #e8e8ec;
+      --white: #ffffff;
+      --green: #2e7d32;
+      --green-light: #e8f5e9;
+      --purple: #7c3aed;
+      --purple-light: #ede9fe;
+      --blue: #2563eb;
+      --blue-light: #eff6ff;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--white); color: var(--dark2); line-height: 1.6; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 40px;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-brand { font-size: 1.1rem; font-weight: 800; color: var(--dark2); }
+    .nav-brand span { color: var(--gold); }
+    .nav-links { display: flex; align-items: center; gap: 32px; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: #666; text-decoration: none; transition: color 0.15s; }
+    .nav-links a:hover { color: var(--dark2); }
+    .nav-cta {
+      background: var(--gold); color: #fff; border: none;
+      padding: 10px 22px; border-radius: 8px;
+      font-size: 0.875rem; font-weight: 600; cursor: pointer;
+      text-decoration: none; transition: background 0.15s;
+    }
+    .nav-cta:hover { background: #9a6b3e; color: #fff; }
+
+    /* HERO */
+    .hero {
+      padding: 140px 40px 100px;
+      max-width: 900px; margin: 0 auto; text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--gold-light); color: var(--gold);
+      padding: 6px 16px; border-radius: 100px;
+      font-size: 0.8rem; font-weight: 600; margin-bottom: 28px;
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 800; color: var(--dark2); line-height: 1.15;
+      margin-bottom: 24px; letter-spacing: -0.5px;
+    }
+    .hero h1 span { color: var(--gold); }
+    .hero p {
+      font-size: 1.15rem; color: #555; max-width: 620px;
+      margin: 0 auto 40px; line-height: 1.8;
+    }
+    .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-hero {
+      background: var(--gold); color: #fff;
+      padding: 14px 32px; border-radius: 10px;
+      font-size: 1rem; font-weight: 600; text-decoration: none;
+      transition: background 0.15s; display: inline-block;
+    }
+    .btn-hero:hover { background: #9a6b3e; color: #fff; }
+    .btn-outline {
+      background: transparent; color: var(--dark2);
+      padding: 14px 32px; border-radius: 10px;
+      font-size: 1rem; font-weight: 600; text-decoration: none;
+      border: 2px solid var(--border); transition: border-color 0.15s;
+    }
+    .btn-outline:hover { border-color: #bbb; color: var(--dark2); }
+
+    /* TRUST STRIP */
+    .trust-strip {
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      padding: 28px 40px; text-align: center;
+      background: #fafafa;
+    }
+    .trust-strip p { font-size: 0.78rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 20px; }
+    .trust-logos { display: flex; justify-content: center; gap: 48px; flex-wrap: wrap; }
+    .trust-logo { font-size: 0.92rem; font-weight: 700; color: #bbb; letter-spacing: 0.2px; }
+
+    /* SECTIONS */
+    section { padding: 100px 40px; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.2px; color: var(--gold); margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 800; color: var(--dark2); line-height: 1.2;
+      margin-bottom: 16px; letter-spacing: -0.3px;
+    }
+    .section-sub { font-size: 1rem; color: #666; max-width: 560px; line-height: 1.8; margin-bottom: 56px; }
+
+    /* STATS */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+    .stat-box {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px 24px; text-align: center;
+      transition: box-shadow 0.2s;
+    }
+    .stat-box:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.07); }
+    .stat-box .num { font-size: 2.8rem; font-weight: 800; color: var(--dark2); line-height: 1; margin-bottom: 8px; }
+    .stat-box .num.gold { color: var(--gold); }
+    .stat-box .num.green { color: var(--green); }
+    .stat-box .num.purple { color: var(--purple); }
+    .stat-box .lbl { font-size: 0.82rem; color: #888; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* HOW IT WORKS */
+    .steps { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; position: relative; }
+    .step {
+      text-align: center; padding: 0 12px; position: relative;
+    }
+    .step-num {
+      width: 48px; height: 48px; border-radius: 50%;
+      background: var(--gold-light); color: var(--gold);
+      font-size: 1rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .step-title { font-size: 0.9rem; font-weight: 700; color: var(--dark2); margin-bottom: 8px; }
+    .step-desc { font-size: 0.8rem; color: #777; line-height: 1.6; }
+    .step-arrow {
+      position: absolute; right: -12px; top: 20px;
+      font-size: 1.2rem; color: #ddd;
+    }
+
+    /* CASE STUDIES */
+    .cases-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px; }
+    .case-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px; transition: box-shadow 0.2s;
+    }
+    .case-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.07); }
+    .case-tag {
+      display: inline-block; padding: 4px 12px; border-radius: 100px;
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; margin-bottom: 16px;
+    }
+    .case-card h3 { font-size: 1.1rem; font-weight: 800; color: var(--dark2); margin-bottom: 4px; }
+    .case-card .location { font-size: 0.8rem; color: #aaa; margin-bottom: 16px; }
+    .case-card p { font-size: 0.875rem; color: #666; line-height: 1.75; margin-bottom: 20px; }
+    .case-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+    .case-metric { text-align: center; }
+    .case-metric .val { font-size: 1.5rem; font-weight: 800; color: var(--dark2); }
+    .case-metric .key { font-size: 0.68rem; color: #bbb; text-transform: uppercase; letter-spacing: 0.4px; font-weight: 600; }
+    .case-quote {
+      background: var(--gold-light); border-left: 3px solid var(--gold);
+      border-radius: 0 8px 8px 0; padding: 14px 16px;
+      font-size: 0.82rem; color: #666; font-style: italic; line-height: 1.7;
+    }
+
+    /* NICHES */
+    .niches-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .niche-card {
+      border: 1px solid var(--border); border-radius: 12px; padding: 24px;
+      display: flex; gap: 16px; align-items: flex-start;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .niche-card:hover { border-color: var(--gold); box-shadow: 0 2px 16px rgba(176,125,79,0.1); }
+    .niche-icon {
+      width: 42px; height: 42px; border-radius: 10px;
+      background: var(--gold-light); display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .niche-title { font-size: 0.9rem; font-weight: 700; color: var(--dark2); margin-bottom: 4px; }
+    .niche-desc { font-size: 0.8rem; color: #888; line-height: 1.6; }
+
+    /* PRICING */
+    .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .pricing-card {
+      border: 1px solid var(--border); border-radius: 16px; padding: 36px 28px;
+      position: relative; transition: box-shadow 0.2s;
+    }
+    .pricing-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+    .pricing-card.featured {
+      border-color: var(--gold); background: linear-gradient(180deg, var(--gold-light) 0%, #fff 60%);
+    }
+    .featured-tag {
+      position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+      background: var(--gold); color: #fff;
+      font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.5px; padding: 4px 14px; border-radius: 100px;
+    }
+    .pricing-tier { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gold); margin-bottom: 8px; }
+    .pricing-price { font-size: 2.4rem; font-weight: 800; color: var(--dark2); line-height: 1; margin-bottom: 4px; }
+    .pricing-price span { font-size: 1rem; font-weight: 500; color: #aaa; }
+    .pricing-desc { font-size: 0.82rem; color: #888; margin-bottom: 24px; line-height: 1.6; }
+    .pricing-features { list-style: none; margin-bottom: 32px; }
+    .pricing-features li {
+      font-size: 0.875rem; color: #555; padding: 6px 0;
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+    .pricing-features li::before { content: "✓"; color: var(--green); font-weight: 700; flex-shrink: 0; }
+    .btn-plan {
+      display: block; text-align: center; width: 100%;
+      padding: 13px; border-radius: 10px; font-size: 0.9rem; font-weight: 600;
+      text-decoration: none; transition: all 0.15s;
+    }
+    .btn-plan-primary { background: var(--gold); color: #fff; }
+    .btn-plan-primary:hover { background: #9a6b3e; color: #fff; }
+    .btn-plan-outline { border: 2px solid var(--border); color: var(--dark2); }
+    .btn-plan-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* CTA */
+    .cta-section {
+      background: var(--dark2); padding: 100px 40px; text-align: center;
+    }
+    .cta-section h2 { font-size: 2.4rem; font-weight: 800; color: #fff; margin-bottom: 16px; letter-spacing: -0.3px; }
+    .cta-section p { font-size: 1rem; color: #aaa; margin-bottom: 40px; max-width: 500px; margin-left: auto; margin-right: auto; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border); padding: 32px 40px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 0.82rem; color: #aaa;
+    }
+    footer strong { color: var(--dark2); }
+
+    @media (max-width: 768px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .cases-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
+      .niches-grid { grid-template-columns: 1fr; }
+      .pricing-grid { grid-template-columns: 1fr; }
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      section { padding: 70px 20px; }
+      .hero { padding: 110px 20px 80px; }
+      footer { flex-direction: column; gap: 12px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">LeadGen<span> AI</span></div>
+  <div class="nav-links">
+    <a href="#how-it-works">How It Works</a>
+    <a href="#results">Results</a>
+    <a href="#niches">Industries</a>
+    <a href="#pricing">Pricing</a>
+    <a href="/" style="color:#b07d4f;font-weight:600">Live Dashboard →</a>
+  </div>
+  <a href="#cta" class="nav-cta">Book a Call</a>
+</nav>
+
+<!-- HERO -->
+<section style="padding:0">
+  <div class="hero">
+    <div class="hero-badge">
+      <span style="width:7px;height:7px;background:#2e7d32;border-radius:50%;display:inline-block"></span>
+      Live campaigns running across US &amp; Europe
+    </div>
+    <h1>
+      We book you meetings.<br/>
+      <span>You close the deals.</span>
+    </h1>
+    <p>
+      Fully automated B2B outreach — we scrape decision makers, verify their emails,
+      write AI-personalised sequences, and send them on autopilot. You only talk to people who replied.
+    </p>
+    <div class="hero-actions">
+      <a href="#cta" class="btn-hero">Book a Free Strategy Call</a>
+      <a href="#results" class="btn-outline">See Real Results</a>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="trust-strip">
+  <p>Trusted by growing companies in</p>
+  <div class="trust-logos">
+    <span class="trust-logo">🇺🇸 United States</span>
+    <span class="trust-logo">🇬🇧 United Kingdom</span>
+    <span class="trust-logo">🇪🇸 Spain</span>
+    <span class="trust-logo">🇮🇹 Italy</span>
+    <span class="trust-logo">🇵🇹 Portugal</span>
+  </div>
+</div>
+
+<!-- STATS -->
+<section style="background:#fafafa">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:48px">
+      <div class="section-label">By the numbers</div>
+      <div class="section-title">Results across all active campaigns</div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="num">641</div>
+        <div class="lbl">Total Leads Generated</div>
+      </div>
+      <div class="stat-box">
+        <div class="num gold">18.5%</div>
+        <div class="lbl">Avg Reply Rate</div>
+      </div>
+      <div class="stat-box">
+        <div class="num purple">47</div>
+        <div class="lbl">Meetings Booked</div>
+      </div>
+      <div class="stat-box">
+        <div class="num green">18</div>
+        <div class="lbl">Deals Closed</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:56px">
+      <div class="section-label">The process</div>
+      <div class="section-title">5 steps. Fully automated.</div>
+      <div class="section-sub" style="margin:12px auto 0">From zero to booked meetings in under a week. We handle everything — you get the conversations.</div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Scrape</div>
+        <div class="step-desc">We identify target companies from Google Maps, directories, and industry databases matching your ideal customer profile.</div>
+        <span class="step-arrow">›</span>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Enrich</div>
+        <div class="step-desc">We find verified personal emails for the right decision maker — CEO, Head of Sales, Managing Director — not generic info@ addresses.</div>
+        <span class="step-arrow">›</span>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Write</div>
+        <div class="step-desc">Claude AI writes a personalised email for each company — referencing their specific niche, location, and pain points. No templates.</div>
+        <span class="step-arrow">›</span>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-title">Send</div>
+        <div class="step-desc">Emails go out on a smart schedule with automatic follow-ups. Replies, bounces, and unsubscribes are handled automatically.</div>
+        <span class="step-arrow">›</span>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-title">Track</div>
+        <div class="step-desc">Live dashboard shows every lead, email, reply, and meeting. You see exactly what's working and where the pipeline stands.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDIES -->
+<section id="results" style="background:#fafafa">
+  <div class="section-inner">
+    <div style="margin-bottom:48px">
+      <div class="section-label">Case Studies</div>
+      <div class="section-title">Real clients. Real numbers.</div>
+      <div class="section-sub">Every number below is tracked in the live dashboard. Nothing is made up.</div>
+    </div>
+    <div class="cases-grid">
+      <div class="case-card">
+        <span class="case-tag" style="background:#fdf3ea;color:#b07d4f">Digital Agency · UK</span>
+        <h3>Vertex Digital</h3>
+        <div class="location">📍 Birmingham, UK — December 2025 to present</div>
+        <p>Manual outreach was costing 15+ hours/week with no consistency. We built a full pipeline targeting London, Manchester, and Birmingham businesses. In 5 months they went from 2–3 cold replies a month to booking meetings on autopilot.</p>
+        <div class="case-metrics">
+          <div class="case-metric"><div class="val">583</div><div class="key">Leads</div></div>
+          <div class="case-metric"><div class="val" style="color:#7c3aed">29</div><div class="key">Meetings</div></div>
+          <div class="case-metric"><div class="val" style="color:#2e7d32">14</div><div class="key">Deals</div></div>
+          <div class="case-metric"><div class="val" style="color:#b07d4f">18.3%</div><div class="key">Reply Rate</div></div>
+        </div>
+        <div class="case-quote">"Before this system we were lucky to get 2 or 3 responses a month. Now we're booking meetings on autopilot." — Marcus T., MD</div>
+      </div>
+
+      <div class="case-card">
+        <span class="case-tag" style="background:#e8f5e9;color:#2e7d32">Recruitment · UK</span>
+        <h3>Crestview Talent</h3>
+        <div class="location">📍 London, UK — February 2026 to present</div>
+        <p>Their BD team was spending 20+ hours a week manually hunting LinkedIn for hiring managers. We automated the entire prospecting pipeline — they now focus 100% on placements, not prospecting.</p>
+        <div class="case-metrics">
+          <div class="case-metric"><div class="val">462</div><div class="key">Leads</div></div>
+          <div class="case-metric"><div class="val" style="color:#7c3aed">20</div><div class="key">Meetings</div></div>
+          <div class="case-metric"><div class="val" style="color:#2e7d32">8</div><div class="key">Deals</div></div>
+          <div class="case-metric"><div class="val" style="color:#b07d4f">19.0%</div><div class="key">Reply Rate</div></div>
+        </div>
+        <div class="case-quote">"Our BD team was drowning in spreadsheets. Now the pipeline runs itself — we just handle the conversations." — Oliver Reed, Managing Partner</div>
+      </div>
+
+      <div class="case-card">
+        <span class="case-tag" style="background:#eff6ff;color:#2563eb">Real Estate · USA</span>
+        <h3>Keystone Realty Partners</h3>
+        <div class="location">📍 Austin, TX — February 2026 to present</div>
+        <p>Spending $3,000/month on Zillow leads with poor conversion. We built a targeted pipeline reaching investors, landlords, and buyers across Austin, Houston, Dallas, and San Antonio — warmer conversations, lower cost.</p>
+        <div class="case-metrics">
+          <div class="case-metric"><div class="val">426</div><div class="key">Leads</div></div>
+          <div class="case-metric"><div class="val" style="color:#7c3aed">18</div><div class="key">Meetings</div></div>
+          <div class="case-metric"><div class="val" style="color:#2e7d32">6</div><div class="key">Deals</div></div>
+          <div class="case-metric"><div class="val" style="color:#b07d4f">18.8%</div><div class="key">Reply Rate</div></div>
+        </div>
+        <div class="case-quote">"This system costs a fraction of Zillow and the conversations are warmer because they're personalised. Our agents are talking to real people." — Rachel Nguyen, Broker-Owner</div>
+      </div>
+
+      <div class="case-card">
+        <span class="case-tag" style="background:#ede9fe;color:#7c3aed">B2B SaaS · Europe</span>
+        <h3>Novacore Technologies</h3>
+        <div class="location">📍 Barcelona, Spain — March 2026 to present</div>
+        <p>Relied entirely on inbound and referrals. We launched cold outreach across Spain, Italy, and Portugal targeting ops managers at construction firms — multi-language sequences, 4 enterprise trials initiated in 60 days.</p>
+        <div class="case-metrics">
+          <div class="case-metric"><div class="val">266</div><div class="key">Leads</div></div>
+          <div class="case-metric"><div class="val" style="color:#7c3aed">10</div><div class="key">Meetings</div></div>
+          <div class="case-metric"><div class="val" style="color:#2e7d32">4</div><div class="key">Deals</div></div>
+          <div class="case-metric"><div class="val" style="color:#b07d4f">17.7%</div><div class="key">Reply Rate</div></div>
+        </div>
+        <div class="case-quote">"We'd tried LinkedIn outreach before and got nothing. This is completely different — people actually respond and the quality of conversations is much higher." — Jordi Mas, Head of Growth</div>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:40px">
+      <a href="/case-studies" class="btn-outline" style="display:inline-block;padding:12px 28px">View Full Case Studies with Monthly Breakdowns →</a>
+    </div>
+  </div>
+</section>
+
+<!-- INDUSTRIES -->
+<section id="niches">
+  <div class="section-inner">
+    <div style="margin-bottom:48px">
+      <div class="section-label">Industries we serve</div>
+      <div class="section-title">Built for B2B businesses that sell to other businesses.</div>
+    </div>
+    <div class="niches-grid">
+      <div class="niche-card">
+        <div class="niche-icon">🏠</div>
+        <div>
+          <div class="niche-title">Real Estate</div>
+          <div class="niche-desc">Agents, brokers, property investors — US and European markets. Reach buyers, sellers, and landlords before your competition does.</div>
+        </div>
+      </div>
+      <div class="niche-card">
+        <div class="niche-icon">💻</div>
+        <div>
+          <div class="niche-title">B2B SaaS</div>
+          <div class="niche-desc">Reach the decision makers who matter — IT managers, operations heads, procurement leads. Personalised at scale.</div>
+        </div>
+      </div>
+      <div class="niche-card">
+        <div class="niche-icon">📣</div>
+        <div>
+          <div class="niche-title">Digital Agencies</div>
+          <div class="niche-desc">Stop relying on referrals. Build a consistent pipeline of SME clients who need SEO, paid ads, and web services.</div>
+        </div>
+      </div>
+      <div class="niche-card">
+        <div class="niche-icon">🤝</div>
+        <div>
+          <div class="niche-title">Recruitment Firms</div>
+          <div class="niche-desc">Reach heads of talent and HR directors at the right companies, at the right time — before your competition does.</div>
+        </div>
+      </div>
+      <div class="niche-card">
+        <div class="niche-icon">⚖️</div>
+        <div>
+          <div class="niche-title">Professional Services</div>
+          <div class="niche-desc">Law firms, accountants, consultancies — reach the business owners and directors who need your expertise.</div>
+        </div>
+      </div>
+      <div class="niche-card">
+        <div class="niche-icon">🏗️</div>
+        <div>
+          <div class="niche-title">Construction &amp; Property</div>
+          <div class="niche-desc">Contractors, developers, architects — build a pipeline of new project enquiries without paid ads or cold calling.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing" style="background:#fafafa">
+  <div class="section-inner">
+    <div style="text-align:center;margin-bottom:56px">
+      <div class="section-label">Pricing</div>
+      <div class="section-title">Simple, transparent plans.</div>
+      <div class="section-sub" style="margin:12px auto 0">No setup fees. No long contracts. Cancel anytime with 14 days notice.</div>
+    </div>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-tier">Starter</div>
+        <div class="pricing-price">$997 <span>/ month</span></div>
+        <div class="pricing-desc">For businesses just getting started with automated outreach.</div>
+        <ul class="pricing-features">
+          <li>Up to 100 leads/month</li>
+          <li>1 target niche &amp; city</li>
+          <li>AI-personalised email sequences</li>
+          <li>2-step follow-up automation</li>
+          <li>Dashboard access</li>
+          <li>Monthly performance report</li>
+        </ul>
+        <a href="#cta" class="btn-plan btn-plan-outline">Get Started</a>
+      </div>
+
+      <div class="pricing-card featured">
+        <div class="featured-tag">Most Popular</div>
+        <div class="pricing-tier">Growth</div>
+        <div class="pricing-price">$1,997 <span>/ month</span></div>
+        <div class="pricing-desc">For businesses ready to scale outreach across multiple markets.</div>
+        <ul class="pricing-features">
+          <li>Up to 300 leads/month</li>
+          <li>3 target niches or cities</li>
+          <li>AI-personalised email sequences</li>
+          <li>3-step follow-up automation</li>
+          <li>Full dashboard + live stats</li>
+          <li>Bi-weekly strategy calls</li>
+          <li>Priority email support</li>
+        </ul>
+        <a href="#cta" class="btn-plan btn-plan-primary">Get Started</a>
+      </div>
+
+      <div class="pricing-card">
+        <div class="pricing-tier">Scale</div>
+        <div class="pricing-price">$3,497 <span>/ month</span></div>
+        <div class="pricing-desc">For companies running multi-market campaigns at volume.</div>
+        <ul class="pricing-features">
+          <li>Unlimited leads</li>
+          <li>Unlimited niches &amp; cities</li>
+          <li>Multi-language outreach</li>
+          <li>Full follow-up automation</li>
+          <li>Dedicated campaign manager</li>
+          <li>Weekly strategy calls</li>
+          <li>CRM integration</li>
+          <li>White-label dashboard option</li>
+        </ul>
+        <a href="#cta" class="btn-plan btn-plan-outline">Get Started</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta" class="cta-section">
+  <div style="max-width:600px;margin:0 auto">
+    <h2>Ready to fill your pipeline?</h2>
+    <p>Book a free 20-minute strategy call. We'll show you exactly how the system works for your niche and give you a realistic forecast based on your market.</p>
+    <a href="mailto:sendtohola@gmail.com?subject=LeadGen AI - Strategy Call Request" class="btn-hero" style="font-size:1.05rem;padding:16px 40px">
+      Book Your Free Strategy Call →
+    </a>
+    <p style="margin-top:20px;font-size:0.82rem;color:#666">No pushy sales. No commitment. Just a straight conversation about your pipeline.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div><strong>LeadGen AI</strong> — Automated B2B Outreach</div>
+  <div>US · UK · Spain · Italy · Portugal</div>
+  <div><a href="/" style="color:#b07d4f;text-decoration:none;font-weight:600">View Live Dashboard →</a></div>
+</footer>
+
+</body>
+</html>

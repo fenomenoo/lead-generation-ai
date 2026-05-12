@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Case Study — UK Marketing Lead Gen{% endblock %}
+{% block title %}Case Study — LeadGen AI{% endblock %}
 {% block content %}
 
 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -163,6 +163,7 @@
 const months = [{% for m in project.months %}"{{ m.short }}",{% endfor %}];
 const emailsSent = [{% for m in project.months %}{{ m.emails_sent }},{% endfor %}];
 const replies = [{% for m in project.months %}{{ m.replies }},{% endfor %}];
+const meetings = [{% for m in project.months %}{{ m.meetings }},{% endfor %}];
 const deals = [{% for m in project.months %}{{ m.deals }},{% endfor %}];
 
 new Chart(document.getElementById('monthlyChart'), {
@@ -172,6 +173,7 @@ new Chart(document.getElementById('monthlyChart'), {
     datasets: [
       { label: 'Emails Sent', data: emailsSent, backgroundColor: '#dce8fb', borderColor: '#2563eb', borderWidth: 1.5, borderRadius: 5 },
       { label: 'Replies', data: replies, backgroundColor: '#fde8d0', borderColor: '#b07d4f', borderWidth: 1.5, borderRadius: 5 },
+      { label: 'Meetings Booked', data: meetings, backgroundColor: '#ede9fe', borderColor: '#7c3aed', borderWidth: 1.5, borderRadius: 5 },
       { label: 'Deals Closed', data: deals, backgroundColor: '#d4edda', borderColor: '#2e7d32', borderWidth: 1.5, borderRadius: 5 },
     ]
   },
