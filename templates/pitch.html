@@ -44,9 +44,12 @@
       background: var(--gold); color: #fff; border: none;
       padding: 10px 22px; border-radius: 8px;
       font-size: 0.875rem; font-weight: 600; cursor: pointer;
-      text-decoration: none; transition: background 0.15s;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      will-change: transform;
     }
-    .nav-cta:hover { background: #9a6b3e; color: #fff; }
+    .nav-cta:hover { background: #9a6b3e; color: #fff; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(176,125,79,0.35); }
+    .nav-cta:active { transform: translateY(1px) scale(0.96); box-shadow: none; }
 
     /* HERO */
     .hero {
@@ -74,16 +77,35 @@
       background: var(--gold); color: #fff;
       padding: 14px 32px; border-radius: 10px;
       font-size: 1rem; font-weight: 600; text-decoration: none;
-      transition: background 0.15s; display: inline-block;
+      display: inline-block; position: relative; overflow: hidden;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      will-change: transform;
+      box-shadow: 0 4px 14px rgba(176,125,79,0.3);
     }
-    .btn-hero:hover { background: #9a6b3e; color: #fff; }
+    .btn-hero::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.18) 50%, transparent 70%);
+      transform: translateX(-100%);
+      transition: transform 0.5s ease;
+    }
+    .btn-hero:hover {
+      background: #9a6b3e; color: #fff;
+      transform: translateY(-3px);
+      box-shadow: 0 10px 28px rgba(176,125,79,0.45);
+    }
+    .btn-hero:hover::after { transform: translateX(100%); }
+    .btn-hero:active { transform: translateY(1px) scale(0.97); box-shadow: 0 2px 8px rgba(176,125,79,0.25); }
+
     .btn-outline {
       background: transparent; color: var(--dark2);
       padding: 14px 32px; border-radius: 10px;
       font-size: 1rem; font-weight: 600; text-decoration: none;
-      border: 2px solid var(--border); transition: border-color 0.15s;
+      border: 2px solid var(--border);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      will-change: transform;
     }
-    .btn-outline:hover { border-color: #bbb; color: var(--dark2); }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+    .btn-outline:active { transform: translateY(1px) scale(0.97); box-shadow: none; }
 
     /* TRUST STRIP */
     .trust-strip {
@@ -212,12 +234,19 @@
     .btn-plan {
       display: block; text-align: center; width: 100%;
       padding: 13px; border-radius: 10px; font-size: 0.9rem; font-weight: 600;
-      text-decoration: none; transition: all 0.15s;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      will-change: transform;
     }
-    .btn-plan-primary { background: var(--gold); color: #fff; }
-    .btn-plan-primary:hover { background: #9a6b3e; color: #fff; }
+    .btn-plan-primary {
+      background: var(--gold); color: #fff;
+      box-shadow: 0 4px 14px rgba(176,125,79,0.3);
+    }
+    .btn-plan-primary:hover { background: #9a6b3e; color: #fff; transform: translateY(-2px); box-shadow: 0 8px 22px rgba(176,125,79,0.4); }
+    .btn-plan-primary:active { transform: translateY(1px) scale(0.97); box-shadow: none; }
     .btn-plan-outline { border: 2px solid var(--border); color: var(--dark2); }
-    .btn-plan-outline:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-plan-outline:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.07); }
+    .btn-plan-outline:active { transform: translateY(1px) scale(0.97); box-shadow: none; }
 
     /* CTA */
     .cta-section {
@@ -448,42 +477,42 @@
     </div>
     <div class="niches-grid">
       <div class="niche-card">
-        <div class="niche-icon">🏠</div>
+        <div class="niche-icon">🏡</div>
         <div>
           <div class="niche-title">Real Estate</div>
           <div class="niche-desc">Agents, brokers, property investors — US and European markets. Reach buyers, sellers, and landlords before your competition does.</div>
         </div>
       </div>
       <div class="niche-card">
-        <div class="niche-icon">💻</div>
+        <div class="niche-icon">⚡</div>
         <div>
           <div class="niche-title">B2B SaaS</div>
           <div class="niche-desc">Reach the decision makers who matter — IT managers, operations heads, procurement leads. Personalised at scale.</div>
         </div>
       </div>
       <div class="niche-card">
-        <div class="niche-icon">📣</div>
+        <div class="niche-icon">🎯</div>
         <div>
           <div class="niche-title">Digital Agencies</div>
           <div class="niche-desc">Stop relying on referrals. Build a consistent pipeline of SME clients who need SEO, paid ads, and web services.</div>
         </div>
       </div>
       <div class="niche-card">
-        <div class="niche-icon">🤝</div>
+        <div class="niche-icon">🧠</div>
         <div>
           <div class="niche-title">Recruitment Firms</div>
           <div class="niche-desc">Reach heads of talent and HR directors at the right companies, at the right time — before your competition does.</div>
         </div>
       </div>
       <div class="niche-card">
-        <div class="niche-icon">⚖️</div>
+        <div class="niche-icon">💼</div>
         <div>
           <div class="niche-title">Professional Services</div>
           <div class="niche-desc">Law firms, accountants, consultancies — reach the business owners and directors who need your expertise.</div>
         </div>
       </div>
       <div class="niche-card">
-        <div class="niche-icon">🏗️</div>
+        <div class="niche-icon">🔩</div>
         <div>
           <div class="niche-title">Construction &amp; Property</div>
           <div class="niche-desc">Contractors, developers, architects — build a pipeline of new project enquiries without paid ads or cold calling.</div>
