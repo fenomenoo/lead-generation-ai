@@ -45,6 +45,8 @@ def init_db():
             opened INTEGER DEFAULT 0,
             FOREIGN KEY (lead_id) REFERENCES leads(id)
         );
+
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_leads_name_address ON leads(name, address);
     """)
     conn.commit()
     conn.close()
